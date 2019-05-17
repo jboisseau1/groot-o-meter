@@ -1,4 +1,5 @@
 import time
+import datetime
 import board
 from board import SCL, SDA
 import busio
@@ -16,7 +17,19 @@ ORDER = neopixel.GRB
 
 pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER)
 
+def time_in_range(start, end, x):
+    """Return true if x is in the range [start, end]"""
+    if start <= end:
+        return start <= x <= end
+    else:
+        return start <= x or x <= end
 
+
+# start = datetime.time(23, 0, 0)
+# end = datetime.time(1, 0, 0)
+# time_in_range(start, end, datetime.time(23, 30, 0))
+
+# TODO: make function for main action
 while True:
     # read moisture level through capacitive touch pad
     wetness = ss.moisture_read()
