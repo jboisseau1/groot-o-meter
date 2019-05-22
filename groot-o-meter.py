@@ -15,22 +15,29 @@ pixel_pin = board.D18 #GPIO
 num_pixels = 30
 ORDER = neopixel.GRB
 
-pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.2, auto_write=False, pixel_order=ORDER)
 
-def time_in_range(start, end, x):
-    """Return true if x is in the range [start, end]"""
+# change brightness level very low if time is between 10pm and 6am EST
+brightness_level = 0.5
+if night_time():
+    brightness_level = 0.01
+
+
+pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=brightness_level, auto_write=False, pixel_order=ORDER)
+
+# checks if it is night time currently
+# returns true if night time; false otherwise
+def night_time():
+    start = datetime.time(22, 0, 0) #10pm
+    end = datetime.time(6, 0, 0) #6am
+    current = datetime.time(datetime.datetime.now().hour,datetime.datetime.now().minute,datetime.datetime.now().second)
+
     if start <= end:
-        return start <= x <= end
+        return start <= current <= end
     else:
-        return start <= x or x <= end
+        return start <= current or current <= end
 
 
-# start = datetime.time(23, 0, 0)
-# end = datetime.time(1, 0, 0)
-# time_in_range(start, end, datetime.time(23, 30, 0))
-
-# TODO: make function for main action
-while True:
+def display_moisture_level():
     # read moisture level through capacitive touch pad
     wetness = ss.moisture_read()
     print("Moisture level: " + str(wetness))
@@ -65,4 +72,6 @@ while True:
         pixels.show()
 
 
+while True:
+    display_moisture_level()
     time.sleep(.5)
