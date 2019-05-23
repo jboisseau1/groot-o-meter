@@ -16,13 +16,9 @@ num_pixels = 30
 ORDER = neopixel.GRB
 
 
-# change brightness level very low if time is between 10pm and 6am EST
 brightness_level = 0.5
-if night_time():
-    brightness_level = 0.01
-
-
 pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=brightness_level, auto_write=False, pixel_order=ORDER)
+
 
 # checks if it is night time currently
 # returns true if night time; false otherwise
@@ -72,6 +68,17 @@ def display_moisture_level():
         pixels.show()
 
 
+# changes LED brightness based on time of day
+def set_brightness():
+    if night_time():
+        pixels.brightness = 0.01
+    if not night_time():
+        pixels.brightness = 0.5
+
+
+
+
 while True:
     display_moisture_level()
+    set_brightness()
     time.sleep(.5)
